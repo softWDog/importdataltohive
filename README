@@ -1,0 +1,35 @@
+mysql table student, create table sql
+CREATE TABLE `student` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(5) NOT NULL,
+  `age` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4356762 DEFAULT CHARSET=utf8;
+
+I concat the hive create table sql based on the related mysql sql table,
+but it is just do a simple transition and need a lot to improve.The code below is
+my simple achievement.
+		int numberOfColumns = resultSetMetaData.getColumnCount();
+		StringBuilder createTable = new StringBuilder("CREATE TABLE " + "`" + tableName + "`" + "(");
+		for (int i = 1; i <= numberOfColumns; i++) {
+			if (i != numberOfColumns) {
+				if (resultSetMetaData.getColumnTypeName(i) == "VARCHAR") {
+					createTable.append(
+							"\n" + resultSetMetaData.getColumnName(i) + " " + resultSetMetaData.getColumnTypeName(i)
+									+ "(" + resultSetMetaData.getColumnDisplaySize(i) + ")" + ",");
+				} else {
+					createTable.append("\n" + resultSetMetaData.getColumnName(i) + " "
+							+ resultSetMetaData.getColumnTypeName(i) + ",");
+				}
+			} else {
+				if (resultSetMetaData.getColumnTypeName(i) == "VARCHAR") {
+					createTable.append(
+							"\n" + resultSetMetaData.getColumnName(i) + " " + resultSetMetaData.getColumnTypeName(i)
+									+ "(" + resultSetMetaData.getColumnDisplaySize(i) + ")" + ")\n");
+				} else {
+					createTable.append("\n" + resultSetMetaData.getColumnName(i) + " "
+							+ resultSetMetaData.getColumnTypeName(i) + ")\n");
+				}
+			}
+		}
+		createTable.append("ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'");
